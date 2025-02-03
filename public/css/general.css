@@ -1,0 +1,64 @@
+/* Style pour les messages d'erreur */
+.error-message {
+    color: red;
+    /* Couleur rouge pour les messages d'erreur */
+    font-weight: bold;
+    /* Texte en gras */
+    margin: 10px 0;
+    /* Marge autour du message */
+}
+
+/* Style de base pour les liens */
+a {
+    color: black;
+    /* Couleur du texte du lien */
+    text-decoration: none;
+    /* Supprimer le soulignement par défaut */
+    transition: color 0.3s ease;
+    /* Transition douce pour le changement de couleur */
+}
+
+/* Style pour le h1 avec logo */
+.header-title {
+    cursor: default;
+    display: flex;
+    /* Utiliser Flexbox pour aligner le logo et le texte */
+    align-items: center;
+    /* Centrer verticalement le contenu */
+    justify-content: center;
+    /* Centrer horizontalement le contenu */
+    font-size: 4rem;
+    /* Taille de la police */
+    color: #333;
+    /* Couleur du texte */
+    margin: 1rem 0;
+    /* Marge autour du titre */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    /* Ombre légère pour le texte */
+}
+
+/* Style pour le logo */
+.header-logo {
+    width: 6rem;
+    /* Largeur du logo */
+    height: auto;
+    /* Hauteur automatique pour conserver le ratio */
+    margin-right: 2rem;
+    /* Espacement entre le logo et le texte */
+    transition: transform 0.3s;
+    /* Transition pour l'effet de survol */
+}
+
+/* Effet de survol pour le logo */
+.header-logo:hover {
+    transform: rotate(5deg);
+    /* Légère rotation au survol */
+}
+
+/* Style général de la page */
+body {
+    font-family: Arial, sans-serif;
+    /* Police de caractères */
+    color: #333;
+    /* Couleur du texte */
+}

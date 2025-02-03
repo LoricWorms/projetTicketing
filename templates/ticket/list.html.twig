@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Tickets{% endblock %}
+
+{% block body %}
+    <h1 class="header-title">
+    <img src="{{ asset('image/freepik-doodle-compusmart-repair-logo-20250110083909p94f-removebg-preview.ico') }}" alt="Logo" class="header-logo" />
+    <a href="{{ path('list_archive') }}">Liste des Tickets</a></h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Etat</th>
+                <th>CGV DECH O/N</th>
+                <th>Client</th>
+                <th>Date du jour</th>
+                <th>TECH T/A/L</th>
+                <th>Numéro</th>
+                <th>Détails/Symptômes</th>
+                <th>Matériel/Marque</th>
+                <th>Préstations proposée</th>
+                <th>Accepté O/N</th>
+                <th>Résultat</th>
+                <th>Tarif</th>
+                <th>Prévenu O/N</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if tickets is not empty %}
+                {% for ticket in tickets %}
+                
+                    {% set status = ticket[0] %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td><div class="{% if status == '1-A faire' %}status-1{% elseif status == '2-En cours' %}status-2{% elseif status == '3-Prêt pour livraison' %}status-3{% elseif status == '4-Terminé' %}status-4{% elseif status == '5-En attente' %}status-5{% elseif status == '6-URGENT' %}status-6{% elseif status == '7-Litige' %}status-7{% else %}status-default{% endif %}">
+                                {{ ticket[0] }}
+                        </div></td>
+                        <td>{{ ticket[1] }}</td>
+                        <td>{{ ticket[2] }}</td>
+                        <td>{{ ticket[3] }}</td>
+                        <td>{{ ticket[4] }}</td>
+                        <td>{{ ticket[5] }}</td>
+                        <td>{{ ticket[6] }}</td>
+                        <td>{{ ticket[7] }}</td>
+                        <td>{{ ticket[8] }}</td>
+                        <td>{{ ticket[9] }}</td>
+                        <td>{{ ticket[10] }}</td>
+                        <td>{{ ticket[11] }}</td>
+                        <td>{{ ticket[12] }}</td>
+                        <td>
+                            <div class="button-container">
+                                <a href="{{ path('delete_tickets', { id: loop.index + 1 }) }}" class="button" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce ticket ?');">
+                                    <img src="{{ asset('image/96768441-poubelle-simple-icône-sur-fond-transparent.jpg') }}" alt="Supprimer" />
+                                </a>
+                                <a href="{{ path('edit_ticket', { id: loop.index + 1 }) }}" class="button">
+                                    <img src="{{ asset('image/edit_logo.jpg') }}" alt="Modifier" />
+                                </a>
+                                <a href="{{ path('archive_ticket', { id: loop.index + 1 }) }}" class="button" onclick="return confirm('Êtes-vous sûr de vouloir archiver ce ticket ?');">
+                                    <img src="{{ asset('image/icons8-enregistrer-sous-64.png') }}" alt="Archiver" />
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <div class="error-message">Aucun ticket trouvé.</div>
+            {% endif %}
+        </tbody>
+    </table>
+    <a href="{{ path('new_tickets') }}" class="floating-button">+</a>
+
+{% endblock %}

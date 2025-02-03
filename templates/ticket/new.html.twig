@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un Ticket{% endblock %}
+
+{% block body %}
+    <h1 class="header-title">
+    <img src="{{ asset('image/freepik-doodle-compusmart-repair-logo-20250110083909p94f-removebg-preview.ico') }}" alt="Logo" class="header-logo" />
+    Ajouter un Ticket</h1>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit">Ajouter Ticket</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('list_tickets') }}" class="return-link">Retour</a>
+    
+{% endblock %}

@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "projetticketing-447408",
+  "private_key_id": "7b60bc0b9a1b7e13e2a22d518b177061ff1899db",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDV3Iy3CZffETUj\nNep2IC+cqsGnkZFY4Rx7abJZFrOQZsNOceVQ1J29PIIFJfJNi9Hb0VkAxp399Msq\nWLuM/g2Il4rW4AxrRdcNPy3wEz99kyiTw6XVxFnLkCgjunWdLVx4pmRQGjuL1Z7x\nF52tHx7fq/ZI7N83TQ0SSgTvITwub2bftSUf6OkKnO5N2kUH7UgwbDVxrytct3o5\nb6jx9zX5H4ntKL+micSy1M8SK1bcymuGIEoDi1TJdYKpcAXMSri6BZRj/naU3Seo\ndoW61Ib4TZtcfgS4Y0iF9ygPZNnQ5y8uNWzQ7vrRz/vVn6Z5S9qXWc8B/cSPeQ1e\nDvdEkVn7AgMBAAECggEAVaSmAWLpG96jPf+IblfDWWUUekuUPlif9FhGoOCzdh+B\nFTgNUkpjBPZnRzKED0Pv/ayfjOz9NkdC2SmBqhvPRaUSZ6x/rLHiRh7IAb1jjqFQ\n/aO7FJk2MIwBVxWDpjcVMgfIYj+vGveoV/pSHZM55O7TiS660UWc93cG9NCFbj5Z\nKuhFmLkksnt9gv2xyhJoAWBrhJAPB+Kz16JFZpdG2m7KgHjlfyJtBx5jrX9E2eKB\nejxrNYETv+UGnU6AxYleofxzse2HbnMVdqCHymSGrdlXieSRFtvp41sa8VJx6i15\nScYfiDFAcnj6uBeoaMJHv8BHvyTlxWycMLKHBIi6CQKBgQDvYA4bRHBWL2HZEalL\nKQitXT9DiDmJB8y6Dq/C955B7VELvDbYjWESq0I3F7ULH9dg1fol9KXApeoC5JYd\n9eTqbVqwbnVkY+5ValKVot0WvonegNPYil3YTeZrWcaFxk8mrarvx0OFtJKWddHL\nrnZTLo3rPnG2+AwbtPLj2YfItwKBgQDktuBv8fn/oSl3g56dqAiCZwQz2cxfbYyO\nfsCDNTUroOxScNxOoSTAzUv3F9KnxJBfxF7bf0XIQYqYxAzZ6vVO/lIXSr8MKcmr\nEBI4WBF9wsg9ix96K6ajrgOB6p6FZEpCFDdUn3U8t8gl7pU+9FxlVmZQX4fUkKmD\nBmbnRROM3QKBgQCeRHEvQCHSKgPU5KN9SUUucr+4Y+I+osSOo9U74EJnroPucWQF\n6/wpvsfJ60fNciESKof4/nd1F33QqdhDOOhAw0q56l59oMDdAq5Vt1fciOBZF+55\ndoqz0FWv1qy2mDaPCTZC0Qno5kohZwbuV4xuVRKKXkALTJec3hfV5GatowKBgEU6\naZLY3oAWyxNm3pL/8ptuDSKYsTjNUvcqvKC6cT6kdgO6L6UJN7O4MF85ccTgRYcH\nTGMKEhg8ZnQ5G162tMvVRQnR0SQgXe+ObMVrOtgjJjMiskNrhQQUPvGLD7J2mdeI\ngPr3TSg0xLtejQRCONlfnpaDY/zeUMDdJjaofPNtAoGARD4JUXdxAIzmDQU60ABS\n5kbfZEK90qo5vuD5N/Vhswgs6qGXjXj9CQc4JCLMfIwGXv43wGkrucYCUGJd5MUn\noU6GlQt0yAKA57QkMA22xbyUaVoWHCaHMVXQQnT5JG5V13g2e46ySyBOmb6xRVgX\nejnCcc0zfdcOxmlO+rdT7dg=\n-----END PRIVATE KEY-----\n",
+  "client_email": "test-167@projetticketing-447408.iam.gserviceaccount.com",
+  "client_id": "108355268489553192771",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test-167%40projetticketing-447408.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

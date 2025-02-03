@@ -1,0 +1,189 @@
+    /* Style général du tableau */
+    table {
+        width: 100%;
+        /* Prend toute la largeur du conteneur */
+        border-collapse: collapse;
+        /* Supprime les espaces entre les cellules */
+        margin: 20px 0;
+        /* Marge autour du tableau */
+        font-size: 16px;
+        /* Taille de la police */
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        /* Ombre légère autour du tableau */
+        cursor: default;
+    }
+
+    /* Style des en-têtes de tableau */
+    th {
+        background-color: #54a8dd;
+        /* Couleur de fond */
+        color: white;
+        /* Couleur du texte */
+        padding: 12px;
+        /* Espacement interne */
+        text-align: left;
+        /* Alignement du texte à gauche */
+    }
+
+    /* Style des cellules de tableau */
+    td {
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        /* Bordure autour des cellules */
+        padding: 12px;
+        /* Espacement interne */
+        transition: background-color 0.3s;
+        /* Transition pour l'effet de survol */
+    }
+
+    /* Effet de survol pour les cellules */
+    tr:hover td {
+        background-color: rgba(0, 0, 0, 0.2);
+        /* Couleur de fond au survol */
+    }
+
+    table tr:nth-child(odd) {
+        background-color: rgba(50, 50, 50, 0.1);
+    }
+
+    /* Styles des statuts */
+    .status-1 {
+        border-radius: 4px;
+        /* Coins arrondis */
+        background-color: #f0f0f0;
+        /* non traité */
+    }
+
+    .status-2 {
+        border-radius: 4px;
+        /* Coins arrondis */
+        background-color: #4db8ff;
+        /* en cours */
+    }
+
+    .status-5 {
+        border-radius: 4px;
+        /* Coins arrondis */
+        background-color: #ffcc00;
+        /* en attente */
+    }
+
+    .status-3 {
+        border-radius: 4px;
+        /* Coins arrondis */
+        background-color: #28a745;
+        /* prêt */
+    }
+
+    .status-4 {
+        border-radius: 4px;
+        /* Coins arrondis */
+        background-color: #6c757d;
+        /* récupéré / livré et payé */
+    }
+
+    .status-6 {
+        border-radius: 4px;
+        /* Coins arrondis */
+        background-color: #dc3545;
+        /* dossier à problème / à gérer une urgence */
+    }
+
+    .status-7 {
+        border-radius: 4px;
+        /* Coins arrondis */
+        background-color: #6610f2;
+        /* litige */
+    }
+
+    .status-7 {
+        border-radius: 4px;
+        /* Coins arrondis */
+        background-color: #ea33f7;
+        /* litige */
+    }
+
+    /* Style pour le bouton flottant */
+    .floating-button {
+        position: fixed;
+        bottom: 5%;
+        /* Distance du bas de la page en pourcentage */
+        right: 5%;
+        /* Distance du côté droit de la page en pourcentage */
+        background-color: #28a745;
+        /* Couleur de fond verte */
+        color: white;
+        /* Couleur du texte en blanc */
+        width: 3.5vw;
+        /* Largeur en pourcentage de la largeur de la fenêtre */
+        height: 3.5vw;
+        /* Hauteur égale à la largeur pour le rendre rond */
+        border-radius: 50%;
+        /* Arrondir le bouton pour le rendre rond */
+        text-align: center;
+        /* Centrer le texte */
+        font-size: 2vw;
+        /* Taille de la police en fonction de la largeur de la fenêtre */
+        line-height: 3.5vw;
+        /* Aligner verticalement le texte */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        /* Ombre légère */
+        z-index: 1000;
+        /* Assurez-vous qu'il est au-dessus des autres éléments */
+        transition: background-color 0.3s, transform 0.3s;
+        /* Transition pour l'effet de survol */
+    }
+
+    .floating-button:hover {
+        background-color: darkgreen;
+        /* Couleur de fond au survol */
+        transform: translateY(-2px);
+        /* Légère élévation au survol */
+    }
+
+    /* Style pour le conteneur des boutons */
+    .button-container {
+        display: flex;
+        /* Utiliser flexbox pour aligner les boutons */
+        align-items: center;
+        /* Centrer verticalement les boutons */
+        gap: 10px;
+        /* Espacement entre les boutons */
+    }
+
+    /* Style pour le bouton de suppression et d'édition */
+    .button {
+        display: inline-flex;
+        /* Permet de traiter l'image comme un bouton */
+        width: 30px;
+        /* Largeur de l'icône */
+        height: 30px;
+        /* Hauteur de l'icône */
+        border: none;
+        /* Pas de bordure */
+        background-color: transparent;
+        /* Fond transparent */
+        cursor: pointer;
+        /* Curseur en forme de main au survol */
+        transition: transform 0.2s, background-color 0.2s;
+        /* Transition pour l'effet de survol */
+        border-radius: 5px;
+        /* Coins arrondis */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        /* Ombre légère */
+    }
+
+    /* Style pour les images dans les boutons */
+    .button img {
+        width: 100%;
+        /* L'image remplit le bouton */
+        height: auto;
+        /* Conserve le ratio de l'image */
+    }
+
+    /* Effet de survol pour les boutons */
+    .button:hover {
+        transform: scale(1.1);
+        /* Agrandir légèrement l'icône au survol */
+        background-color: rgba(0, 0, 0, 0.1);
+        /* Fond léger au survol */
+    }
