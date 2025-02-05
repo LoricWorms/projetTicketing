@@ -51,7 +51,7 @@
                         <td>{{ ticket[12] }}</td>
                         <td>
                             <div class="button-container">
-                                <a href="{{ path('delete_tickets', { id: loop.index + 1 }) }}" class="button" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce ticket ?');">
+                                <a href="{{ path('delete_ticket', { id: loop.index + 1 }) }}" class="button" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce ticket ?');">
                                     <img src="{{ asset('image/96768441-poubelle-simple-icône-sur-fond-transparent.jpg') }}" alt="Supprimer" />
                                 </a>
                                 <a href="{{ path('edit_ticket', { id: loop.index + 1 }) }}" class="button">
@@ -69,6 +69,6 @@
             {% endif %}
         </tbody>
     </table>
-    <a href="{{ path('new_tickets') }}" class="floating-button">+</a>
+    <a href="{{ path('new_ticket') }}" class="floating-button">+</a>
 
 {% endblock %}

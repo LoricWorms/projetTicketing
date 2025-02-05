@@ -42,13 +42,14 @@
     }
 
     table tr:nth-child(odd) {
-        background-color: rgba(50, 50, 50, 0.1);
+        background-color: rgba(10, 10, 10, 0.1);
     }
 
     /* Styles des statuts */
     .status-1 {
         border-radius: 4px;
         /* Coins arrondis */
+        padding: 0.5rem;
         background-color: #f0f0f0;
         /* non traité */
     }
@@ -56,6 +57,7 @@
     .status-2 {
         border-radius: 4px;
         /* Coins arrondis */
+        padding: 0.5rem;
         background-color: #4db8ff;
         /* en cours */
     }
@@ -63,6 +65,7 @@
     .status-5 {
         border-radius: 4px;
         /* Coins arrondis */
+        padding: 0.5rem;
         background-color: #ffcc00;
         /* en attente */
     }
@@ -70,6 +73,7 @@
     .status-3 {
         border-radius: 4px;
         /* Coins arrondis */
+        padding: 0.5rem;
         background-color: #28a745;
         /* prêt */
     }
@@ -77,6 +81,7 @@
     .status-4 {
         border-radius: 4px;
         /* Coins arrondis */
+        padding: 0.5rem;
         background-color: #6c757d;
         /* récupéré / livré et payé */
     }
@@ -84,6 +89,7 @@
     .status-6 {
         border-radius: 4px;
         /* Coins arrondis */
+        padding: 0.5rem;
         background-color: #dc3545;
         /* dossier à problème / à gérer une urgence */
     }
@@ -91,13 +97,7 @@
     .status-7 {
         border-radius: 4px;
         /* Coins arrondis */
-        background-color: #6610f2;
-        /* litige */
-    }
-
-    .status-7 {
-        border-radius: 4px;
-        /* Coins arrondis */
+        padding: 0.5rem;
         background-color: #ea33f7;
         /* litige */
     }

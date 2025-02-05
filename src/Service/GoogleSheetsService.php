@@ -8,8 +8,11 @@ use App\Entity\Ticket;
 
 class GoogleSheetsService
 {
-    private $client;
-    private $service;
+    private Client $client;
+    private Sheets $service;
+
+    private const SHEET_NAME = 'Sheet1';
+    private const ARCHIVE_SHEET_NAME = 'Archive';
 
     public function __construct()
     {
@@ -23,87 +26,87 @@ class GoogleSheetsService
         $this->service = new Sheets($this->client);
     }
 
-    /**
-     * Lecture d'une feuille de calcul Google Sheets
-     *
-     * @param string $spreadsheetId Identifiant de la feuille de calcul
-     * @param string $range Plage de cellules à lire
-     *
-     * @return array Tableau de valeurs lues
-     */
-    public function readSheet($spreadsheetId, $range)
+    private function handleError(\Exception $e, string $context): void
+    {
+        error_log("Erreur lors de {$context} : " . $e->getMessage());
+        throw new \RuntimeException("Erreur lors de {$context}", 0, $e);
+    }
+
+    private function ticketToArray(Ticket $ticket): array
+    {
+        return [
+            $ticket->getStatut(),
+            $ticket->getCGVDECH(),
+            $ticket->getClient(),
+            $ticket->getDateJour()->format('d/m/Y'),
+            $ticket->getTECH(),
+            $ticket->getNumeroClient(),
+            $ticket->getDetails(),
+            $ticket->getMateriel(),
+            $ticket->getPrestations(),
+            $ticket->getAccepte(),
+            $ticket->getResultat(),
+            $ticket->getTarif(),
+            $ticket->getPrevenu()
+        ];
+    }
+
+    public function readSheet(string $spreadsheetId, string $range): array
     {
         try {
-            // Utiliser le service Sheets pour obtenir les valeurs
             $response = $this->service->spreadsheets_values->get($spreadsheetId, $range);
-
-            // Vérifier si des valeurs ont été retournées
-            if ($response->getValues()) {
-                return $response->getValues();
-            } else {
-                error_log('Aucune valeur trouvée dans la plage spécifiée.');
-                return []; // Retourner un tableau vide si aucune valeur n'est trouvée
-            }
+            return $response->getValues() ?: [];
         } catch (\Exception $e) {
-            // Gérer l'erreur (journaliser, lancer une exception, etc.)
-            error_log('Erreur lors de la lecture de la feuille : ' . $e->getMessage());
-            throw new \RuntimeException('Erreur lors de la lecture de la feuille', 0, $e);
+            $this->handleError($e, 'la lecture de la feuille');
         }
     }
 
-    /**
-     * Ajouter un ticket à la feuille de calcul Google Sheets
-     *
-     * @param string $spreadsheetId Identifiant de la feuille de calcul
-     * @param array $ticket Données du ticket à ajouter
-     */
-    public function addTicket($spreadsheetId, array $ticket, $range)
+    public function addTicket(string $spreadsheetId, array $ticketData, string $range): void
     {
         try {
+            // Vérifiez que toutes les données nécessaires sont présentes
+            if (count($ticketData) < 13) {
+                throw new \InvalidArgumentException('Les données du ticket sont incomplètes.');
+            }
+
+            // Formater les valeurs pour l'API
             $values = [
                 [
-                    $ticket['statut'],
-                    $ticket['CGV_DECH'],
-                    $ticket['client'],
-                    $ticket['date_jour']->format('d/m/Y'),
-                    $ticket['TECH'],
-                    $ticket['numero_client'],
-                    $ticket['details'],
-                    $ticket['materiel'],
-                    $ticket['prestations'],
-                    $ticket['accepte'],
-                    $ticket['resultat'],
-                    $ticket['tarif'],
-                    $ticket['prevenu']
+                    $ticketData['statut'],
+                    $ticketData['CGV_DECH'],
+                    $ticketData['client'],
+                    $ticketData['date_jour']->format('d/m/Y'),
+                    $ticketData['TECH'],
+                    $ticketData['numero_client'],
+                    $ticketData['details'],
+                    $ticketData['materiel'],
+                    $ticketData['prestations'],
+                    $ticketData['accepte'],
+                    $ticketData['resultat'],
+                    $ticketData['tarif'],
+                    $ticketData['prevenu']
                 ],
             ];
+
             $body = new \Google\Service\Sheets\ValueRange(['values' => $values]);
             $params = ['valueInputOption' => 'RAW'];
 
             // Utiliser append pour ajouter à la première ligne vide
             $this->service->spreadsheets_values->append($spreadsheetId, $range, $body, $params);
         } catch (\Exception $e) {
-            error_log('Erreur lors de l\'ajout du ticket : ' . $e->getMessage());
-            throw new \RuntimeException('Erreur lors de l\'ajout du ticket', 0, $e);
+            $this->handleError($e, 'l\'ajout du ticket');
         }
     }
 
-    /**
-     * Supprimer un ticket de la feuille de calcul Google Sheets
-     *
-     * @param string $spreadsheetId Identifiant de la feuille de calcul
-     * @param int $rowIndex Index de la ligne à supprimer (1-indexé)
-     */
-    public function deleteTicket($spreadsheetId, $rowIndex)
+    public function deleteTicket(string $spreadsheetId, int $rowIndex): void
     {
         try {
-            // Créer une requête pour supprimer la ligne
             $request = new \Google\Service\Sheets\BatchUpdateSpreadsheetRequest([
                 'requests' => [
                     [
                         'deleteDimension' => [
                             'range' => [
-                                'sheetId' => 0, // ID de la feuille, 0 pour la première feuille
+                                'sheetId' => 0,
                                 'dimension' => 'ROWS',
                                 'startIndex' => $rowIndex - 1,
                                 'endIndex' => $rowIndex
@@ -112,69 +115,32 @@ class GoogleSheetsService
                     ]
                 ]
             ]);
-
-            // Exécuter la requête
             $this->service->spreadsheets->batchUpdate($spreadsheetId, $request);
         } catch (\Exception $e) {
-            error_log('Erreur lors de la suppression du ticket : ' . $e->getMessage());
-            throw new \RuntimeException('Erreur lors de la suppression du ticket', 0, $e);
+            $this->handleError($e, 'la suppression du ticket');
         }
     }
 
-    /**
-     * Mettre à jour un ticket dans la feuille de calcul Google Sheets
-     *
-     * @param string $spreadsheetId Identifiant de la feuille de calcul
-     * @param int $rowIndex Index de la ligne à mettre à jour (1-indexé)
-     * @param Ticket $ticket Objet Ticket à mettre à jour
-     */
-    public function updateTicket($spreadsheetId, $rowIndex, Ticket $ticket)
+    public function updateTicket(string $spreadsheetId, int $rowIndex, Ticket $ticket): void
     {
         try {
-            // Définir la plage à mettre à jour
-            $range = 'Sheet1!A' . $rowIndex . ':M' . $rowIndex; // Ajustez la plage selon vos colonnes
+            $range = self::SHEET_NAME . '!A' . $rowIndex . ':M' . $rowIndex;
 
-            $values = [
-                [
-                    $ticket->getStatut(),
-                    $ticket->getCGVDECH(),
-                    $ticket->getClient(),
-                    $ticket->getDateJour()->format('d-m-Y'),
-                    $ticket->getTECH(),
-                    $ticket->getNumeroClient(),
-                    $ticket->getDetails(),
-                    $ticket->getMateriel(),
-                    $ticket->getPrestations(),
-                    $ticket->getAccepte(),
-                    $ticket->getResultat(),
-                    $ticket->getTarif(),
-                    $ticket->getPrevenu()
-                ],
-            ];
-
+            $values = [$this->ticketToArray($ticket)];
             $body = new \Google\Service\Sheets\ValueRange(['values' => $values]);
             $params = ['valueInputOption' => 'RAW'];
-
-            // Utiliser update pour mettre à jour la ligne spécifiée
             $this->service->spreadsheets_values->update($spreadsheetId, $range, $body, $params);
         } catch (\Exception $e) {
-            error_log('Erreur lors de la mise à jour du ticket : ' . $e->getMessage());
-            throw new \RuntimeException('Erreur lors de la mise à jour du ticket', 0, $e);
+            $this->handleError($e, 'la mise à jour du ticket');
         }
     }
 
-    /**
-     * Archiver un ticket en le copiant dans une autre feuille et en le supprimant de la feuille d'origine
-     *
-     * @param string $spreadsheetId Identifiant de la feuille de calcul
-     * @param int $rowIndex Index de la ligne à archiver (1-indexé)
-     */
-    public function archiveTicket($spreadsheetId, $rowIndex)
+    public function archiveTicket(string $spreadsheetId, int $rowIndex): void
     {
         try {
             // Lire le ticket à partir de la feuille d'origine
-            $ticketValues = $this->readSheet($spreadsheetId, 'Sheet1!A' . $rowIndex . ':M' . $rowIndex);
-            $range = 'Archive!A1'; // Plage de départ pour l'ajout
+            $ticketValues = $this->readSheet($spreadsheetId, self::SHEET_NAME . '!A' . $rowIndex . ':M' . $rowIndex);
+            $range = self::ARCHIVE_SHEET_NAME . '!A1'; // Plage de départ pour l'ajout
 
             if (empty($ticketValues)) {
                 throw new \RuntimeException('Aucun ticket trouvé à archiver.');
@@ -208,8 +174,7 @@ class GoogleSheetsService
             // Supprimer le ticket de la feuille d'origine
             $this->deleteTicket($spreadsheetId, $rowIndex);
         } catch (\Exception $e) {
-            error_log('Erreur lors de l\'archivage du ticket : ' . $e->getMessage());
-            throw new \RuntimeException('Erreur lors de l\'archivage du ticket', 0, $e);
+            $this->handleError($e, 'l\'archivage du ticket');
         }
     }
 }
