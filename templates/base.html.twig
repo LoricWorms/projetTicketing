@@ -2,8 +2,8 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="{{ asset('image/freepik-doodle-compusmart-repair-logo-20250110083909p94f.ico') }}">
+        <title>{% block title %}ProjetTicketing{% endblock %}</title>
+        <link rel="icon" href="{{ asset('image/Sans-titre-2.ico') }}">
         {% block stylesheets %}
             <link rel="stylesheet" href="{{ asset('css/list.css') }}"/>
             <link rel="stylesheet" href="{{ asset('css/form.css') }}"/>
@@ -15,6 +15,39 @@
         {% endblock %}
     </head>
     <body>
+    <main>
+        <h1 class="header-title">
+            <a href="{{ path('app_accueil') }}">
+            <img src="{{ asset('image/Sans-titre-2.png') }}" alt="Logo" class="header-logo"></img></a>
+            {% block header_title %}Titre par défaut{% endblock %}
+        </h1>
+        <header>
+            <nav class="nav_accueil">
+            <ul class="ul_accueil">
+                <li class="li_accueil"><a href= {{ path('app_accueil') }} >Accueil</a></li>
+                <li class="li_accueil">
+                    <a>Gestion des Tickets</a>
+                    <ul class="dropdown">
+                        <li><a href="{{ path('list_tickets') }}">Liste</a></li>
+                        <li><a href="{{ path('list_archive') }}">Archives</a></li>
+                        <li><a href="{{ path('new_ticket') }}">Nouveau Ticket</a></li>
+                    </ul>
+                </li>
+                <li class="li_accueil">
+                    <a>Gestion des Devis</a>
+                    <ul class="dropdown">
+                        <li><a href="{{ path('list_devis') }}">Liste</a></li>
+                        <li><a href="{{ path('devis_archive') }}">Archives</a></li>
+                        <li><a href="{{ path('new_devis') }}">Nouveau Devis</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</header>
         {% block body %}{% endblock %}
-    </body>
+    </main>
+
+    <footer>
+        <p>&copy; {{ "now"|date("Y") }} Mon Application. Tous droits réservés.</p>
+    </footer>
 </html>

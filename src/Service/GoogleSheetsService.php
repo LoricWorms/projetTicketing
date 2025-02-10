@@ -6,6 +6,12 @@ use Google\Client;
 use Google\Service\Sheets;
 use App\Entity\Ticket;
 
+/**
+ * Class GoogleSheetsService
+ * 
+ * Ce service gère les interactions avec Google Sheets pour les opérations liées aux tickets,
+ * y compris la lecture, l'ajout, la mise à jour, la suppression et l'archivage des tickets.
+ */
 class GoogleSheetsService
 {
     private Client $client;
@@ -14,6 +20,11 @@ class GoogleSheetsService
     private const SHEET_NAME = 'Sheet1';
     private const ARCHIVE_SHEET_NAME = 'Archive';
 
+    /**
+     * GoogleSheetsService constructeur.
+     * 
+     * Initialise le client Google et le service Sheets.
+     */
     public function __construct()
     {
         $this->client = new Client();
@@ -26,12 +37,25 @@ class GoogleSheetsService
         $this->service = new Sheets($this->client);
     }
 
+    /**
+     * Gère les erreurs en les enregistrant et en lançant une exception.
+     * 
+     * @param \Exception $e L'exception à gérer.
+     * @param string $context Le contexte de l'erreur.
+     * @throws \RuntimeException
+     */
     private function handleError(\Exception $e, string $context): void
     {
         error_log("Erreur lors de {$context} : " . $e->getMessage());
         throw new \RuntimeException("Erreur lors de {$context}", 0, $e);
     }
 
+    /**
+     * Convertit un objet Ticket en tableau.
+     * 
+     * @param Ticket $ticket L'objet Ticket à convertir.
+     * @return array Le tableau représentant le ticket.
+     */
     private function ticketToArray(Ticket $ticket): array
     {
         return [
@@ -51,6 +75,14 @@ class GoogleSheetsService
         ];
     }
 
+    /**
+     * Lit les valeurs d'une feuille Google Sheets.
+     * 
+     * @param string $spreadsheetId L'ID de la feuille de calcul.
+     * @param string $range La plage de cellules à lire.
+     * @return array Les valeurs lues de la feuille.
+     * @throws \RuntimeException
+     */
     public function readSheet(string $spreadsheetId, string $range): array
     {
         try {
@@ -61,6 +93,15 @@ class GoogleSheetsService
         }
     }
 
+    /**
+     * Ajoute un ticket à la feuille Google Sheets.
+     * 
+     * @param string $spreadsheetId L'ID de la feuille de calcul.
+     * @param array $ticketData Les données du ticket à ajouter.
+     * @param string $range La plage où ajouter le ticket.
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     */
     public function addTicket(string $spreadsheetId, array $ticketData, string $range): void
     {
         try {
@@ -98,7 +139,15 @@ class GoogleSheetsService
         }
     }
 
-    public function deleteTicket(string $spreadsheetId, int $rowIndex): void
+    /**
+     * Supprime un ticket de la feuille Google Sheets.
+     * 
+     * @param string $spreadsheetId L'ID de la feuille de calcul.
+     * @param int $rowIndex L'index de la ligne à supprimer.
+     * @param int $sheetId L'ID de la feuille.
+     * @throws \RuntimeException
+     */
+    public function delete(string $spreadsheetId, int $rowIndex, int $sheetId): void
     {
         try {
             $request = new \Google\Service\Sheets\BatchUpdateSpreadsheetRequest([
@@ -106,7 +155,7 @@ class GoogleSheetsService
                     [
                         'deleteDimension' => [
                             'range' => [
-                                'sheetId' => 0,
+                                'sheetId' => $sheetId,
                                 'dimension' => 'ROWS',
                                 'startIndex' => $rowIndex - 1,
                                 'endIndex' => $rowIndex
@@ -121,6 +170,14 @@ class GoogleSheetsService
         }
     }
 
+    /**
+     * Met à jour un ticket dans la feuille Google Sheets.
+     * 
+     * @param string $spreadsheetId L'ID de la feuille de calcul.
+     * @param int $rowIndex L'index de la ligne à mettre à jour.
+     * @param Ticket $ticket L'objet Ticket contenant les nouvelles données.
+     * @throws \RuntimeException
+     */
     public function updateTicket(string $spreadsheetId, int $rowIndex, Ticket $ticket): void
     {
         try {
@@ -135,6 +192,13 @@ class GoogleSheetsService
         }
     }
 
+    /**
+     * Archive un ticket en le déplaçant vers la feuille d'archive.
+     * 
+     * @param string $spreadsheetId L'ID de la feuille de calcul.
+     * @param int $rowIndex L'index de la ligne à archiver.
+     * @throws \RuntimeException
+     */
     public function archiveTicket(string $spreadsheetId, int $rowIndex): void
     {
         try {
@@ -172,7 +236,7 @@ class GoogleSheetsService
             $this->addTicket($spreadsheetId, $ticketData, $range);
 
             // Supprimer le ticket de la feuille d'origine
-            $this->deleteTicket($spreadsheetId, $rowIndex);
+            $this->delete($spreadsheetId, $rowIndex, 0);
         } catch (\Exception $e) {
             $this->handleError($e, 'l\'archivage du ticket');
         }

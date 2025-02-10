@@ -1,0 +1,214 @@
+<?php
+
+namespace App\Service;
+
+use Google\Client;
+use Google\Service\Sheets;
+use App\Entity\Devis;
+
+/**
+ * Class GoogleSheetsService
+ * 
+ * Ce service gère les interactions avec Google Sheets pour les opérations liées aux devis,
+ * y compris l'ajout, la mise à jour, la suppression et l'archivage des devis.
+ */
+class GoogleSheetsService
+{
+    private Client $client;
+    private Sheets $service;
+
+    private const SHEET_NAME_2 = 'Sheet2';
+    private const ARCHIVE_SHEET_NAME_2 = 'Archive2';
+
+    /**
+     * GoogleSheetsService constructeur.
+     * 
+     * Initialise le client Google et le service Sheets.
+     */
+    public function __construct()
+    {
+        $this->client = new Client();
+        $this->client->setApplicationName('projetTicketing');
+        $this->client->setAuthConfig(__DIR__ . "/../../config/projetticketing.json");
+        $this->client->setScopes(Sheets::SPREADSHEETS);
+        $this->client->setAccessType('offline');
+
+        // Initialiser le service Sheets
+        $this->service = new Sheets($this->client);
+    }
+
+    /**
+     * Gère les erreurs en les enregistrant et en lançant une exception.
+     * 
+     * @param \Exception $e L'exception à gérer.
+     * @param string $context Le contexte de l'erreur.
+     * @throws \RuntimeException
+     */
+    private function handleError(\Exception $e, string $context): void
+    {
+        error_log("Erreur lors de {$context} : " . $e->getMessage());
+        throw new \RuntimeException("Erreur lors de {$context}", 0, $e);
+    }
+
+    /**
+     * Convertit un objet Devis en tableau.
+     * 
+     * @param Devis $devis L'objet Devis à convertir.
+     * @return array Le tableau représentant le devis.
+     */
+    private function devisToArray(Devis $devis): array
+    {
+        return [
+            'client' => $devis->getClient(),
+            'date_jour' => $devis->getDateJour()->format('d/m/Y'),
+            'description' => $devis->getDescription(),
+            'quantite' => $devis->getQuantite(),
+            'unite' => $devis->getUnite(),
+            'prix_unit' => $devis->getPrixUnitHT(),
+            'totalHT' => $devis->getTotalHT(),
+            'TVA' => $devis->getTva(),
+            'TTC' => $devis->getTTC()
+        ];
+    }
+
+    /**
+     * Ajoute un devis à la feuille Google Sheets.
+     * 
+     * @param string $spreadsheetId L'ID de la feuille de calcul.
+     * @param array $devisData Les données du devis à ajouter.
+     * @param string $range La plage où ajouter le devis.
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     */
+    public function addDevis(string $spreadsheetId, array $devisData, string $range): void
+    {
+        try {
+            // Vérifiez que toutes les données nécessaires sont présentes
+            if (count($devisData) < 9) {
+                throw new \InvalidArgumentException('Les données du ticket sont incomplètes.');
+            }
+
+            // Formater les valeurs pour l'API
+            $values = [
+                [
+                    $devisData['client'],
+                    $devisData['date_jour']->format('d/m/Y'),
+                    $devisData['description'],
+                    $devisData['quantite'],
+                    $devisData['unite'],
+                    $devisData['prixUnitHT'],
+                    $devisData['totalHT'],
+                    $devisData['TVA'],
+                    $devisData['TTC']
+                ],
+            ];
+
+            $body = new \Google\Service\Sheets\ValueRange(['values' => $values]);
+            $params = ['valueInputOption' => 'RAW'];
+
+            // Utiliser append pour ajouter à la première ligne vide
+            $this->service->spreadsheets_values->append($spreadsheetId, $range, $body, $params);
+        } catch (\Exception $e) {
+            $this->handleError($e, 'l\'ajout du devis');
+        }
+    }
+
+    /**
+     * Met à jour un devis dans la feuille Google Sheets.
+     * 
+     * @param string $spreadsheetId L'ID de la feuille de calcul.
+     * @param int $rowIndex L'index de la ligne à mettre à jour.
+     * @param Devis $devis L'objet Devis contenant les nouvelles données.
+     * @throws \RuntimeException
+     */
+    public function updateDevis(string $spreadsheetId, int $rowIndex, Devis $devis): void
+    {
+        try {
+            $range = self::SHEET_NAME_2 . '!A' . $rowIndex . ':I' . $rowIndex;
+
+            $values = [$this->DevisToArray($devis)];
+            $body = new \Google\Service\Sheets\ValueRange(['values' => $values]);
+            $params = ['valueInputOption' => 'RAW'];
+            $this->service->spreadsheets_values->update($spreadsheetId, $range, $body, $params);
+        } catch (\Exception $e) {
+            $this->handleError($e, 'la mise à jour du ticket');
+        }
+    }
+
+    /**
+     * Supprime un devis de la feuille Google Sheets.
+     * 
+     * @param string $spreadsheetId L'ID de la feuille de calcul.
+     * @param int $rowIndex L'index de la ligne à supprimer.
+     * @param int $sheetId L'ID de la feuille.
+     * @throws \RuntimeException
+     */
+    public function delete(string $spreadsheetId, int $rowIndex, int $sheetId): void
+    {
+        try {
+            $request = new \Google\Service\Sheets\BatchUpdateSpreadsheetRequest([
+                'requests' => [
+                    [
+                        'deleteDimension' => [
+                            'range' => [
+                                'sheetId' => $sheetId,
+                                'dimension' => 'ROWS',
+                                'startIndex' => $rowIndex - 1,
+                                'endIndex' => $rowIndex
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
+            $this->service->spreadsheets->batchUpdate($spreadsheetId, $request);
+        } catch (\Exception $e) {
+            $this->handleError($e, 'la suppression du ticket');
+        }
+    }
+
+    /**
+     * Archive un devis en le déplaçant vers la feuille d'archive.
+     * 
+     * @param string $spreadsheetId L'ID de la feuille de calcul.
+     * @param int $rowIndex L'index de la ligne à archiver.
+     * @throws \RuntimeException
+     */
+    public function archiveDevis(string $spreadsheetId, int $rowIndex): void
+    {
+        try {
+            // Lire le devis à partir de la feuille d'origine
+            $devisValues = $this->readSheet($spreadsheetId, self::SHEET_NAME . '!A' . $rowIndex . ':M' . $rowIndex);
+            $range = self::ARCHIVE_SHEET_NAME_2 . '!A1'; // Plage de départ pour l'ajout
+
+            if (empty($devisValues)) {
+                throw new \RuntimeException('Aucun ticket trouvé à archiver.');
+            }
+
+            // Vérifiez que les valeurs du ticket sont bien formatées
+            if (count($devisValues[0]) < 9) {
+                throw new \RuntimeException('Les données du ticket sont incomplètes.');
+            }
+
+            // Formater les valeurs du ticket en tableau associatif
+            $devisData = [
+                'client' => $devisValues[0][0],
+                'date_jour' => new \DateTime($devisValues[0][1]),
+                'description' => $devisValues[0][2],
+                'quantite' => $devisValues[0][3],
+                'unite' => $devisValues[0][4],
+                'totalHT' => $devisValues[0][5],
+                'details' => $devisValues[0][6],
+                'TVA' => $devisValues[0][7],
+                'TTC' => $devisValues[0][8]
+            ];
+
+            // Ajouter le ticket à la feuille d'archive
+            $this->addDevis($spreadsheetId, $devisData, $range);
+
+            // Supprimer le ticket de la feuille d'origine
+            $this->delete($spreadsheetId, $rowIndex, 1);
+        } catch (\Exception $e) {
+            $this->handleError($e, 'l\'archivage du ticket');
+        }
+    }
+}

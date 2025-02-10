@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Devis{% endblock %}
+
+{% block header_title %}Liste des Devis{% endblock %}
+
+{% block body %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Client</th>
+                <th>Date du jour</th>
+                <th>Description</th>
+                <th>Quantité</th>
+                <th>Unité</th>
+                <th>Prix Unitaire HT</th>
+                <th>Total HT</th>
+                <th>TVA</th>
+                <th>TTC</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if devis is not empty %}
+                {% for d in devis %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ d[0] }}</td>
+                        <td>{{ d[1] }}</td>
+                        <td>{{ d[2] }}</td>
+                        <td>{{ d[3] }}</td>
+                        <td>{{ d[4] }}</td>
+                        <td>{{ d[5] }}</td>
+                        <td>{{ d[6] }}</td>
+                        <td>{{ d[7] }}</td>
+                        <td>{{ d[8] }}</td>
+                        <td>
+                            <div class="button-container">
+                                <a href="{{ path('delete_devis', { id: loop.index + 1 }) }}" class="button" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce ticket ?');">
+                                    <img src="{{ asset('image/96768441-poubelle-simple-icône-sur-fond-transparent.jpg') }}" alt="Supprimer" />
+                                </a>
+                                <a href="{{ path('edit_devis', { id: loop.index + 1 }) }}" class="button">
+                                    <img src="{{ asset('image/edit_logo.jpg') }}" alt="Modifier" />
+                                </a>
+                                <a href="{{ path('archive_devis', { id: loop.index + 1 }) }}" class="button" onclick="return confirm('Êtes-vous sûr de vouloir archiver ce ticket ?');">
+                                    <img src="{{ asset('image/icons8-enregistrer-sous-64.png') }}" alt="Archiver" />
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <div class="error-message">Aucun devis trouvé.</div>
+            {% endif %}
+        </tbody>
+    </table>
+    <a href="{{ path('new_devis') }}" class="floating-button">+</a>
+
+{% endblock %}

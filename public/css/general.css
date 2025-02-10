@@ -20,7 +20,6 @@ a {
 
 /* Style pour le h1 avec logo */
 .header-title {
-    cursor: default;
     display: flex;
     /* Utiliser Flexbox pour aligner le logo et le texte */
     align-items: center;
@@ -61,4 +60,110 @@ body {
     /* Police de caractères */
     color: #333;
     /* Couleur du texte */
+}
+
+/* Style pour la navigation d'accueil */
+.nav_accueil {
+    background-color: #333;
+    /* Couleur de fond de la navigation */
+    margin: 2rem;
+    /* Marge autour de la navigation */
+}
+
+/* Style pour la liste d'accueil */
+.ul_accueil {
+    list-style-type: none;
+    /* Supprime les puces */
+    padding: 0;
+    /* Supprime le padding */
+    margin: 0;
+    /* Supprime la marge */
+}
+
+/* Style pour les éléments de la liste d'accueil */
+.li_accueil {
+    position: relative;
+    /* Nécessaire pour le positionnement du sous-menu */
+    display: inline-block;
+    /* Affiche les éléments en ligne */
+}
+
+/* Style pour les liens dans la liste d'accueil */
+.li_accueil a {
+    display: block;
+    /* Permet de cliquer sur toute la zone */
+    padding: 15px 20px;
+    /* Espacement interne */
+    color: white;
+    /* Couleur du texte */
+    text-decoration: none;
+    /* Supprime le soulignement */
+}
+
+/* Effet de survol pour les liens dans la liste d'accueil */
+.li_accueil a:hover {
+    background-color: #555;
+    /* Couleur de fond au survol */
+}
+
+/* Style pour le sous-menu */
+.dropdown {
+    display: none;
+    /* Masque le sous-menu par défaut */
+    position: absolute;
+    /* Positionne le sous-menu par rapport à l'élément parent */
+    background-color: #333;
+    /* Couleur de fond du sous-menu */
+    min-width: 160px;
+    /* Largeur minimale du sous-menu */
+    z-index: 1;
+    /* Assure que le sous-menu est au-dessus des autres éléments */
+}
+
+/* Style pour les éléments du sous-menu */
+.dropdown li {
+    display: block;
+    /* Affiche les éléments du sous-menu en bloc */
+}
+
+/* Affiche le sous-menu au survol de l'élément parent */
+.li_accueil:hover .dropdown {
+    display: block;
+    /* Affiche le sous-menu au survol de l'élément parent */
+}
+
+/* Style pour le pied de page */
+footer {
+    text-align: center;
+    /* Centre le texte dans le pied de page */
+    padding: 20px 0;
+    /* Espacement interne */
+    margin-top: 2rem;
+    /* Marge au-dessus du pied de page */
+    background-color: #333;
+    /* Couleur de fond du pied de page */
+    color: white;
+    /* Couleur du texte dans le pied de page */
+    position: relative;
+    /* Positionnement relatif */
+    bottom: 0;
+    /* Positionne le pied de page en bas */
+    width: 100%;
+    /* Largeur à 100% */
+}
+
+/* Style pour le conteneur d'accueil */
+.accueil_contener {
+    margin: auto;
+    /* Centre le conteneur */
+    padding: 0.5rem;
+    /* Espacement interne */
+    width: 50%;
+    /* Définissez une largeur pour l'élément */
+    text-align: center;
+    /* Centre le texte à l'intérieur du conteneur */
+    background-color: #54a8dd;
+    /* Couleur de fond du conteneur */
+    border-radius: 15px;
+    /* Arrondit les coins du conteneur */
 }

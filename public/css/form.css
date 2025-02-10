@@ -120,6 +120,7 @@ input[type="radio"] {
 /* Style du lien de retour */
 .return-link {
     position: fixed;
+    /* Position fixe pour le lien de retour */
     bottom: 5%;
     /* Distance du bas de la page en pourcentage */
     left: 5%;
@@ -146,6 +147,8 @@ input[type="radio"] {
     /* Ombre légère */
     transition: background-color 0.3s, transform 0.2s;
     /* Transition pour l'effet de survol */
+    z-index: 1000;
+    /* Assure que le lien est au-dessus des autres éléments */
 }
 
 /* Effet de survol pour le lien de retour */

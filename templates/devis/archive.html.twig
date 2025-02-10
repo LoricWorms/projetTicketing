@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Devis Archiver{% endblock %}
+
+{% block header_title %}Devis Archiver{% endblock %}
+
+{% block body %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Client</th>
+                <th>Date du jour</th>
+                <th>Description</th>
+                <th>Quantité</th>
+                <th>Unité</th>
+                <th>Prix Unitaire HT</th>
+                <th>Total HT</th>
+                <th>TVA</th>
+                <th>TTC</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if devis is not empty %}
+                {% for d in devis %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ d[0] }}</td>
+                        <td>{{ d[1] }}</td>
+                        <td>{{ d[2] }}</td>
+                        <td>{{ d[3] }}</td>
+                        <td>{{ d[4] }}</td>
+                        <td>{{ d[5] }}</td>
+                        <td>{{ d[6] }}</td>
+                        <td>{{ d[7] }}</td>
+                        <td>{{ d[8] }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <div class="error-message">Aucun ticket trouvé.</div>
+            {% endif %}
+        </tbody>
+    </table>
+    <a href="{{ path('new_devis') }}" class="floating-button">+</a>
+
+{% endblock %}

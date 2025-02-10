@@ -12,18 +12,35 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
+/**
+ * Class GoogleSheetsController
+ * 
+ * Ce contrôleur gère les opérations liées aux tickets, y compris la création, la liste, la modification, la suppression et l'archivage,
+ * en utilisant Google Sheets comme backend.
+ */
 class GoogleSheetsController extends AbstractController
 {
     private GoogleSheetsService $googleSheetsService;
     private CacheInterface $cache;
     private const SPREADSHEET_ID = '1YK_RWejtfBeROGt2-KEmM0W_SRnP2O8LtQmr3pZqzSM';
 
+    /**
+     * GoogleSheetsController constructor.
+     * 
+     * @param GoogleSheetsService $googleSheetsService Service pour interagir avec Google Sheets.
+     * @param CacheInterface $cache Interface de cache pour stocker les résultats.
+     */
     public function __construct(GoogleSheetsService $googleSheetsService, CacheInterface $cache)
     {
         $this->googleSheetsService = $googleSheetsService;
         $this->cache = $cache;
     }
 
+    /**
+     * Liste tous les tickets.
+     * 
+     * @return Response La réponse contenant la liste des tickets.
+     */
     #[Route('/tickets', name: 'list_tickets')]
     public function listTickets(): Response
     {
@@ -40,6 +57,11 @@ class GoogleSheetsController extends AbstractController
         ]);
     }
 
+    /**
+     * Liste les tickets archivés.
+     * 
+     * @return Response La réponse contenant la liste des tickets archivés.
+     */
     #[Route('/tickets/archive', name: 'list_archive')]
     public function listArchive(): Response
     {
@@ -56,8 +78,14 @@ class GoogleSheetsController extends AbstractController
         ]);
     }
 
+    /**
+     * Crée un nouveau ticket.
+     * 
+     * @param Request $request La requête HTTP contenant les données du formulaire.
+     * @return Response La réponse après la création du ticket.
+     */
     #[Route('/tickets/new', name: 'new_ticket')]
-    public function new(Request $request): Response
+    public function new_ticket(Request $request): Response
     {
         $ticket = new Ticket();
         $form = $this->createForm(TicketType::class, $ticket);
@@ -75,14 +103,22 @@ class GoogleSheetsController extends AbstractController
 
         return $this->render('ticket/new.html.twig', [
             'form' => $form->createView(),
+            'titre' => "Ticket",
+            'retour' => "list_tickets"
         ]);
     }
 
+    /**
+     * Supprime un ticket par son ID.
+     * 
+     * @param int $id L'ID du ticket à supprimer.
+     * @return Response La réponse après la suppression du ticket.
+     */
     #[Route('/delete-ticket/{id}', name: 'delete_ticket')]
     public function deleteTicketAction(int $id): Response
     {
         try {
-            $this->googleSheetsService->deleteTicket(self::SPREADSHEET_ID, $id);
+            $this->googleSheetsService->delete(self::SPREADSHEET_ID, $id, 0);
             $this->addFlash('success', 'Ticket supprimé avec succès !');
 
             // Invalider le cache
@@ -94,6 +130,13 @@ class GoogleSheetsController extends AbstractController
         return $this->redirectToRoute('list_tickets');
     }
 
+    /**
+     * Modifie un ticket existant.
+     * 
+     * @param Request $request La requête HTTP contenant les données du formulaire.
+     * @param int $id L'ID du ticket à modifier.
+     * @return Response La réponse après la modification du ticket.
+     */
     #[Route('/edit-ticket/{id}', name: 'edit_ticket')]
     public function editTicketAction(Request $request, int $id): Response
     {
@@ -116,9 +159,17 @@ class GoogleSheetsController extends AbstractController
 
         return $this->render('ticket/edit.html.twig', [
             'form' => $form->createView(),
+            'titre' => "Ticket",
+            'retour' => "list_tickets"
         ]);
     }
 
+    /**
+     * Archive un ticket par son ID.
+     * 
+     * @param int $id L'ID du ticket à archiver.
+     * @return Response La réponse après l'archivage du ticket.
+     */
     #[Route("/archive-ticket/{id}", name: "archive_ticket")]
     public function archiveTicket(int $id): Response
     {
@@ -135,6 +186,12 @@ class GoogleSheetsController extends AbstractController
         return $this->redirectToRoute('list_tickets');
     }
 
+    /**
+     * Récupère un ticket par son ID.
+     * 
+     * @param int $id L'ID du ticket à récupérer.
+     * @return Ticket|null Le ticket correspondant ou null si non trouvé.
+     */
     private function getTicketById(int $id): ?Ticket
     {
         $range = 'Sheet1!A' . $id . ':M' . $id;
@@ -172,6 +229,12 @@ class GoogleSheetsController extends AbstractController
         return $ticket;
     }
 
+    /**
+     * Convertit un objet Ticket en tableau.
+     * 
+     * @param Ticket $ticket L'objet Ticket à convertir.
+     * @return array Le tableau représentant le ticket.
+     */
     private function ticketToArray(Ticket $ticket): array
     {
         return [

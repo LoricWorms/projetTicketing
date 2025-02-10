@@ -11,8 +11,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
+/**
+ * Class TicketType
+ * 
+ * Ce formulaire gère la création et la modification des tickets.
+ */
 class TicketType extends AbstractType
 {
+    /**
+     * Configure le formulaire.
+     * 
+     * @param FormBuilderInterface $builder Le constructeur de formulaire.
+     * @param array $options Les options du formulaire.
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -49,7 +60,7 @@ class TicketType extends AbstractType
             ->add('TECH', TextType::class, ['label' => 'TECH', 'required' => false])
             ->add('numero_client', TextType::class, [
                 'label' => 'Numéro',
-                'attr' => ['class' => 'phone-input'], // Ajout d'une classe pour le ciblage du js
+                'attr' => ['class' => 'phone-input'], // classe pour le ciblage du js
             ])
             ->add('details', TextareaType::class, ['label' => 'Détails/Symptomes', 'required' => false])
             ->add('materiel', TextType::class, ['label' => 'Matériel/Marque', 'required' => false])
@@ -79,6 +90,11 @@ class TicketType extends AbstractType
         ;
     }
 
+    /**
+     * Configure les options du formulaire.
+     * 
+     * @param OptionsResolver $resolver Le résolveur d'options.
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
